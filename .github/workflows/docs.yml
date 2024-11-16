@@ -44,10 +44,14 @@ jobs:
       - name: add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=kernel/index.html">' > target/i686-unknown-none/doc/kernel/index.html
 
+      - name: list contents
+        run: ls -R target/i686-unknown-none/doc/kernel
+
       - name: Upload docs
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./target/i686-unknown-none/doc/kernel
+          name: "docs"
 
   deploy:
         needs: build
@@ -66,3 +70,5 @@ jobs:
           - name: Deploy documentation
             id: pages
             uses: actions/deploy-pages@v2
+            with:
+              artifact_name: "docs"
