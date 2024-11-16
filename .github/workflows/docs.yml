@@ -28,11 +28,11 @@ jobs:
 
       - name: install rustup
         uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: nightly
     
       - name: build docs
-        run: cargo doc --target targets/i686-unknown-none.json
+        run: |
+          rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
+          cargo doc --target targets/i686-unknown-none.json
         
       - name: add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=kernel/index.html">' > target/i686-unknown-none/doc/kernel/index.html
