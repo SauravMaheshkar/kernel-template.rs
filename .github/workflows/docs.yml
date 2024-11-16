@@ -19,6 +19,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 env:
   CARGO_TERM_COLOR: always
 
