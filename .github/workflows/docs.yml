@@ -27,8 +27,7 @@ jobs:
         uses: actions/checkout@v4
     
       - name: build docs
-        run: |
-          cargo doc --target targets/i686-unknown-none.json
+        run: cargo +nightly doc -Z build-std=core,compiler_builtins --target targets/i686-unknown-none.json
         
       - name: add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=kernel/index.html">' > target/i686-unknown-none/doc/kernel/index.html
