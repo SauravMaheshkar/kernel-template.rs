@@ -25,10 +25,15 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
+      - name: rust setup
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: rust-src
     
       - name: build docs
         run: |
-          cargo +nightly build -Z build-std=core,compiler_builtins --target targets/i686-unknown-none.json
           cargo +nightly doc -Z build-std=core,compiler_builtins --target targets/i686-unknown-none.json
         
       - name: add redirect
