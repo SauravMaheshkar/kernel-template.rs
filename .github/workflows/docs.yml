@@ -52,10 +52,11 @@ jobs:
         run: ls -R target/i686-unknown-none/doc/kernel
 
       - name: Upload docs
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./target/i686-unknown-none/doc/kernel
           name: "docs"
+          if-no-files-found: error
 
   deploy:
         needs: build
@@ -71,6 +72,11 @@ jobs:
             url: ${{ steps.pages.outputs.page_url }}
 
         steps:
+          - name: Download docs
+            uses: actions/download-artifact@v4
+            with:
+              name: "docs"
+
           - name: Deploy documentation
             id: pages
             uses: actions/deploy-pages@v2
