@@ -46,9 +46,6 @@ jobs:
       - name: Add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=kernel/index.html">' > target/i686-unknown-none/doc/kernel/index.html
 
-      - name: List generated docs contents
-        run: ls -R target/i686-unknown-none/doc/kernel
-
       - name: Setup Git
         run: |
           git config --global user.name 'github-actions'
@@ -62,7 +59,7 @@ jobs:
 
       - name: filter docs
         run: |
-          find . -mindepth 1 -maxdepth 1 ! -name "target" -exec rm -rf {} \;
+          find . -mindepth 1 -maxdepth 1 ! -name "target" ! -name ".git" -exec rm -rf {} \;
           cp -r target/i686-unknown-none/doc/kernel/* .
           rm -rf target
 
