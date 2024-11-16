@@ -28,6 +28,9 @@ jobs:
 
       - name: install rustup
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: x86_64-unknown-linux-gnu
     
       - name: build docs
         run: |
