@@ -32,10 +32,7 @@ jobs:
           toolchain: nightly
     
       - name: build docs
-        uses: actions-rs/cargo@v1
-        with:
-            command: doc
-            args: --no-deps --document-private-items --target targets/i686-unknown-none.json
+        run: cargo doc --target targets/i686-unknown-none.json
         
       - name: add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=kernel/index.html">' > target/i686-unknown-none/doc/kernel/index.html
