@@ -6,8 +6,6 @@
 
 use core::panic::PanicInfo;
 
-#[macro_use]
-pub mod macros;
 pub mod constants;
 pub mod io;
 
@@ -26,14 +24,14 @@ where
     T: Fn(),
 {
     fn run(&self) {
-        crate::print_serial!("{} ... ", core::any::type_name::<T>());
+        serial_print!("{} ... ", core::any::type_name::<T>());
         self();
-        crate::println_serial!("✓");
+        serial_println!("✓");
     }
 }
 
 pub fn test_runner(tests: &[&dyn Testable]) {
-    crate::println_serial!("Running {} tests", tests.len());
+    serial_println!("Running {} tests", tests.len());
     for test in tests {
         test.run();
     }
@@ -41,8 +39,8 @@ pub fn test_runner(tests: &[&dyn Testable]) {
 }
 
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
-    crate::println_serial!("x\n");
-    crate::println_serial!("Error: {}\n", info);
+    serial_println!("x\n");
+    serial_println!("Error: {}\n", info);
     crate::io::exit_qemu(crate::io::QemuExitCode::Failed);
     hlt_loop();
 }

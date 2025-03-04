@@ -8,10 +8,7 @@ use core::panic::PanicInfo;
 
 use bootloader::{entry_point, BootInfo};
 
-#[macro_use]
-mod macros;
-
-use kernel::io;
+use kernel::println;
 
 entry_point!(kernel_main);
 
@@ -35,8 +32,8 @@ fn kernel_main(_info: &'static BootInfo) -> ! {
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
-    loop {}
+    println!("[PANIC]: {}\n", info);
+    kernel::hlt_loop();
 }
 
 #[cfg(test)]

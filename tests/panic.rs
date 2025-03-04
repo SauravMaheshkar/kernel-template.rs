@@ -5,25 +5,25 @@ use core::panic::PanicInfo;
 
 use kernel::{
     io::{exit_qemu, QemuExitCode},
-    print_serial, println_serial,
+    serial_print, serial_println,
 };
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     should_fail();
-    println_serial!("[test did not panic]");
+    serial_println!("[test did not panic]");
     exit_qemu(QemuExitCode::Failed);
     loop {}
 }
 
 fn should_fail() {
-    print_serial!("panic::should_fail... ");
+    serial_print!("panic::should_fail... ");
     assert_eq!(0, 1);
 }
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    println_serial!("✓");
+    serial_println!("✓");
     exit_qemu(QemuExitCode::Success);
     loop {}
 }
