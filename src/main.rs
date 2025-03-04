@@ -1,30 +1,46 @@
 #![no_std]
 #![no_main]
-#![allow(bad_asm_style)]
+#![feature(custom_test_frameworks)]
+#![test_runner(kernel::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
-pub mod tui;
-
-use core::arch::global_asm;
 use core::panic::PanicInfo;
 
-use tui::TerminalWriter;
+use bootloader::{entry_point, BootInfo};
 
-global_asm!(include_str!("boot.s"));
+#[macro_use]
+mod macros;
+
+use kernel::io;
+
+entry_point!(kernel_main);
 
 /// The entry point of the kernel
 ///
 /// This function is called by the boot code in `boot.s`
 #[no_mangle]
-pub extern "C" fn kernel_main() {
-    let mut writer = TerminalWriter::new();
-    writer.write(b"Hello, World!\n");
+fn kernel_main(_info: &'static BootInfo) -> ! {
+    println!("Hello World{}", "!");
+
+    #[cfg(test)]
+    test_main();
+
+    kernel::hlt_loop();
 }
 
 /// Simple panic handler that loops forever
 ///
 /// # Arguments
 /// * `_info` - The panic information
+#[cfg(not(test))]
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    kernel::test_panic_handler(info)
 }
