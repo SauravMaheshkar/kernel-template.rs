@@ -8,6 +8,7 @@ use core::panic::PanicInfo;
 
 pub mod constants;
 pub mod io;
+pub mod logger;
 
 pub fn hlt_loop() -> ! {
     loop {

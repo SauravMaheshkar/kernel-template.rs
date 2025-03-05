@@ -17,7 +17,7 @@ entry_point!(kernel_main);
 /// This function is called by the boot code in `boot.s`
 #[no_mangle]
 fn kernel_main(_info: &'static BootInfo) -> ! {
-    println!("Hello World{}", "!");
+    kernel::info!("Hello World{}", "!");
 
     #[cfg(test)]
     test_main();
