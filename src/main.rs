@@ -1,43 +1,20 @@
-#![no_std]
-#![no_main]
-#![feature(custom_test_frameworks)]
-#![test_runner(kernel::test_runner)]
-#![reexport_test_harness_main = "test_main"]
+fn main() {
+    // read env variables that were set in build script
+    let uefi_path = env!("UEFI_PATH");
+    let bios_path = env!("BIOS_PATH");
 
-use core::panic::PanicInfo;
+    // choose whether to start the UEFI or BIOS image
+    let uefi = true;
 
-use bootloader::{entry_point, BootInfo};
-
-use kernel::println;
-
-entry_point!(kernel_main);
-
-/// The entry point of the kernel
-///
-/// This function is called by the boot code in `boot.s`
-#[no_mangle]
-fn kernel_main(_info: &'static BootInfo) -> ! {
-    kernel::info!("Hello World{}", "!");
-
-    #[cfg(test)]
-    test_main();
-
-    kernel::hlt_loop();
-}
-
-/// Simple panic handler that loops forever
-///
-/// # Arguments
-/// * `_info` - The panic information
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    println!("[PANIC]: {}\n", info);
-    kernel::hlt_loop();
-}
-
-#[cfg(test)]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    kernel::test_panic_handler(info)
+    let mut cmd = std::process::Command::new("qemu-system-x86_64");
+    if uefi {
+        cmd.arg("-bios").arg(ovmf_prebuilt::ovmf_pure_efi());
+        cmd.arg("-drive")
+            .arg(format!("format=raw,file={uefi_path}"));
+    } else {
+        cmd.arg("-drive")
+            .arg(format!("format=raw,file={bios_path}"));
+    }
+    let mut child = cmd.spawn().unwrap();
+    child.wait().unwrap();
 }
