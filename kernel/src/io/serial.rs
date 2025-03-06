@@ -1,46 +1,30 @@
-//! # Serial Communication
-//!
-//! * Ref: https://wiki.osdev.org/Serial_Ports
+use bootloader_x86_64_common::serial::SerialPort;
+use core::fmt::Write;
+use log::Log;
 
-use lazy_static::lazy_static;
-use spin::Mutex;
-use uart_16550::SerialPort;
-
-lazy_static! {
-    pub static ref SERIAL1: Mutex<SerialPort> = {
-        let mut serial_port = unsafe { SerialPort::new(0x3F8) };
-        serial_port.init();
-        Mutex::new(serial_port)
-    };
+pub struct SerialLogger {
+    serial_port: spin::Mutex<SerialPort>,
 }
 
-#[doc(hidden)]
-pub fn _print(args: ::core::fmt::Arguments) {
-    use core::fmt::Write;
-
-    use x86_64::instructions::interrupts;
-
-    interrupts::without_interrupts(|| {
-        SERIAL1
-            .lock()
-            .write_fmt(args)
-            .expect("Printing to serial failed");
-    });
+impl SerialLogger {
+    /// # Safety
+    /// Initializes a `SerialPort`
+    pub unsafe fn init() -> Self {
+        Self {
+            serial_port: spin::Mutex::new(unsafe { SerialPort::init() }),
+        }
+    }
 }
 
-/// Prints to the host through the serial interface.
-#[macro_export]
-macro_rules! serial_print {
-    ($($arg:tt)*) => {
-        $crate::io::serial::_print(format_args!($($arg)*));
-    };
-}
+impl Log for SerialLogger {
+    fn enabled(&self, _metadata: &log::Metadata) -> bool {
+        true
+    }
 
-/// Prints to the host through the serial interface, appending a newline.
-#[macro_export]
-macro_rules! serial_println {
-    () => ($crate::serial_print!("\n"));
-    ($fmt:expr) => ($crate::serial_print!(concat!($fmt, "\n")));
-    ($fmt:expr, $($arg:tt)*) => ($crate::serial_print!(
-        concat!($fmt, "\n"), $($arg)*));
+    fn log(&self, record: &log::Record) {
+        let mut serial_port = self.serial_port.lock();
+        writeln!(serial_port, "{:5}: {}", record.level(), record.args()).unwrap();
+    }
+
+    fn flush(&self) {}
 }
