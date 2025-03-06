@@ -1,10 +1,11 @@
 #![no_std]
 
-pub mod io;
+use bootloader_api::BootInfo;
+
 pub mod logger;
 
-pub fn init() {
-    logger::init();
+pub fn init(framework_info: &'static mut BootInfo) {
+    logger::init(framework_info);
 }
 
 pub fn hlt_loop() -> ! {

@@ -18,11 +18,8 @@ entry_point!(kernel_main, config = &BOOTLOADER_CONFIG);
 ///
 /// This function is called by the boot code in `boot.s`
 #[no_mangle]
-fn kernel_main(_info: &'static mut BootInfo) -> ! {
-    // let framebuffer = info.framebuffer.as_mut();
-
-    kernel::init();
-
+fn kernel_main(info: &'static mut BootInfo) -> ! {
+    kernel::init(info);
     kernel::hlt_loop();
 }
 

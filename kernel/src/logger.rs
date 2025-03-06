@@ -1,19 +1,17 @@
-use spin::Once;
+use bootloader_boot_config::LevelFilter;
 
-use crate::io::serial::SerialLogger;
+use bootloader_api::BootInfo;
 
-pub static LOGGER: Once<SerialLogger> = Once::INIT;
+use bootloader_x86_64_common::init_logger;
 
-pub fn init() {
-    unsafe {
-        LOGGER.call_once(|| SerialLogger::init());
-        let logger = LOGGER.get().unwrap();
-        log::set_logger(logger).expect("Logger already initialised");
-    }
+pub fn init(info: &'static mut BootInfo) {
+    let framebuffer = info.framebuffer.take().unwrap();
+    let info = framebuffer.info();
+    let buffer = framebuffer.into_buffer();
 
-    log::set_max_level(log::LevelFilter::Info);
+    init_logger(buffer, info, LevelFilter::Info, true, true);
+
     log::info!("Logger initialized");
-
     log::info!(
         r#"
         ,-~~-.___.
