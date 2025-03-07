@@ -9,6 +9,8 @@
       =(  _____| (_________|   W<
 ```
 
+Starter template for a barebones x86_64 kernel based on Phil Opperman's [Writing an OS in Rust](https://os.phil-opp.com/) using the latest bootloader `v0.11.X` crate.
+
 ## References
 
 * [Writing an OS in Rust](https://os.phil-opp.com/)
