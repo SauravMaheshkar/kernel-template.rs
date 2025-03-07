@@ -19,7 +19,7 @@ entry_point!(kernel_main, config = &BOOTLOADER_CONFIG);
 /// This function is called by the boot code in `boot.s`
 #[no_mangle]
 fn kernel_main(info: &'static mut BootInfo) -> ! {
-    kernel::init(info);
+    kernel::init(info, true, true);
     kernel::hlt_loop();
 }
 
@@ -28,6 +28,7 @@ fn kernel_main(info: &'static mut BootInfo) -> ! {
 /// # Arguments
 /// * `_info` - The panic information
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    log::info!("[PANIC]: {}", info);
     kernel::hlt_loop();
 }
