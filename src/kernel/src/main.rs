@@ -23,10 +23,10 @@ fn kernel_main(info: &'static mut BootInfo) -> ! {
     kernel::hlt_loop();
 }
 
-/// Simple panic handler that loops forever
+/// Simple panic handler that prints the panic information to the serial port and halts the CPU
 ///
 /// # Arguments
-/// * `_info` - The panic information
+/// * `info` - ['PanicInfo']  - The panic information
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     log::info!("[PANIC]: {}", info);
