@@ -11,6 +11,16 @@
 
 Starter template for a barebones x86_64 kernel based on Phil Opperman's [Writing an OS in Rust](https://os.phil-opp.com/) using the latest bootloader `v0.11.X` crate.
 
+## Getting started
+
+You need to have qemu and llvm installed on your machine to build and run the kernel. With those installed you can get started using cargo
+
+```bash
+cargo build
+cargo run
+```
+
+
 ## References
 
 * [Writing an OS in Rust](https://os.phil-opp.com/)
