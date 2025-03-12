@@ -29,6 +29,9 @@ jobs:
               with:
                   targets: x86_64-unknown-none
 
+            - name: Add components
+              run: rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
+
             - name: Configure cache
               uses: Swatinem/rust-cache@v2
 
